@@ -52,11 +52,11 @@ jobs:
           file: ./${{ matrix.base }}/Dockerfile
           platforms: linux/arm/v7
           target: base
-          cache-from: type=registry,ref=ghcr.io/iHost-Open-Source-Project/esphome-docker-base:cache-${{ matrix.base }}
-          cache-to: ${{ github.event_name == 'release' && format('type=registry,ref=ghcr.io/iHost-Open-Source-Project/esphome-docker-base:cache-{0},mode=max', matrix.base) || '' }}
+          cache-from: type=registry,ref=ghcr.io/ihost-open-source-project/esphome-docker-base:cache-${{ matrix.base }}
+          cache-to: ${{ github.event_name == 'release' && format('type=registry,ref=ghcr.io/ihost-open-source-project/esphome-docker-base:cache-{0},mode=max', matrix.base) || '' }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
-            ghcr.io/iHost-Open-Source-Project/esphome-docker-base:${{ matrix.base }}-${{ steps.get_tag.outputs.version }}
+            ghcr.io/ihost-open-source-project/esphome-docker-base:${{ matrix.base }}-${{ steps.get_tag.outputs.version }}
 
       - name: Build ha-addon image
         uses: docker/build-push-action@v6.15.0
