@@ -1,10 +1,6 @@
 name: Build ESPHome base container image
 
 on:
-  pull_request:
-    branches: [main]
-  release:
-    types: [published]
   workflow_dispatch:
 
 
@@ -21,7 +17,6 @@ jobs:
       matrix:
         base:
           - debian
-          - alpine
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
@@ -31,7 +26,7 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.6.0
         with:
-          platforms: linux/arm64,linux/arm/v7
+          platforms: linux/arm/v7
 
 
       - name: Log in to the GitHub container registry
@@ -45,15 +40,7 @@ jobs:
       - name: Get tag
         id: get_tag
         run: |-
-          if [[ "${{ github.event_name }}" = "release" ]]; then
-            version="${{ github.event.release.tag_name}}"
-          elif [[ "${{ github.event_name }}" = "pull_request" ]]; then
-            version="pr-${{ github.event.pull_request.number }}"
-          else
-            version=${GITHUB_REF#refs/heads/}
-            version=${version//\//-}
-          fi
-          echo version="$version" >> $GITHUB_OUTPUT
+          echo version="2025.04.0" >> $GITHUB_OUTPUT
 
       - name: Build base image
         uses: docker/build-push-action@v6.15.0
@@ -63,13 +50,13 @@ jobs:
         with:
           context: ${{ matrix.base }}
           file: ./${{ matrix.base }}/Dockerfile
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/arm/v7
           target: base
-          cache-from: type=registry,ref=ghcr.io/esphome/docker-base:cache-${{ matrix.base }}
-          cache-to: ${{ github.event_name == 'release' && format('type=registry,ref=ghcr.io/esphome/docker-base:cache-{0},mode=max', matrix.base) || '' }}
+          cache-from: type=registry,ref=ghcr.io/iHost-Open-Source-Project/esphome-docker-base:cache-${{ matrix.base }}
+          cache-to: ${{ github.event_name == 'release' && format('type=registry,ref=ghcr.io/iHost-Open-Source-Project/esphome-docker-base:cache-{0},mode=max', matrix.base) || '' }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
-            ghcr.io/esphome/docker-base:${{ matrix.base }}-${{ steps.get_tag.outputs.version }}
+            ghcr.io/iHost-Open-Source-Project/esphome-docker-base:${{ matrix.base }}-${{ steps.get_tag.outputs.version }}
 
       - name: Build ha-addon image
         uses: docker/build-push-action@v6.15.0
@@ -79,7 +66,7 @@ jobs:
         with:
           context: ${{ matrix.base }}
           file: ./${{ matrix.base }}/Dockerfile
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/arm/v7
           target: ha-addon
           cache-from: type=registry,ref=ghcr.io/esphome/docker-base:cache-${{ matrix.base }}
           cache-to: ${{ github.event_name == 'release' && format('type=registry,ref=ghcr.io/esphome/docker-base:cache-{0},mode=max', matrix.base) || '' }}

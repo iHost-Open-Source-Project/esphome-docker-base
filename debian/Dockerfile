@@ -54,6 +54,9 @@ RUN \
     && if [ "${TARGETARCH}${TARGETVARIANT}" = "amd64" ]; then \
             export S6_ARCH="x86_64"; \
             export TEMPIO_ARCH="amd64"; \
+        elif [ "${TARGETARCH}${TARGETVARIANT}" = "armv7" ]; then \
+            export S6_ARCH="armhf"; \
+            export TEMPIO_ARCH="armhf"; \
         elif [ "${TARGETARCH}${TARGETVARIANT}" = "arm64" ]; then \
             export S6_ARCH="aarch64"; \
             export TEMPIO_ARCH="aarch64"; \
