@@ -31,8 +31,8 @@ RUN \
     && apt update \
     && apt install -y --no-install-recommends \
         nginx-light \
-        jq=1.6-2.1 \
-        xz-utils=5.4.1-0.2 \
+        jq \
+        xz-utils \
     && rm -rf \
         /tmp/* \
         /var/{cache,log}/* \
